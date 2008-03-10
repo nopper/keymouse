@@ -40,16 +40,20 @@ void App::allocateObject()
 	
 	std::vector<string> tokens;
 	m_config.getOptionAndSplit("notify exec", " ", tokens);
-	
-	m_notifyProg = strdup(tokens[0].c_str());
-	
-	m_notifyProgArgs = new char* [tokens.size()];
-	m_notifyProgArgs[0] = strdup(m_notifyProg);
-	
-	for (int i = 2; i < tokens.size() - 1; i++)
-		m_notifyProgArgs[i - 1] = strdup(tokens[i].c_str());
-	
-	m_notifyProgArgs[tokens.size() - 2] = NULL;
+
+	if (!tokens.empty())
+	{
+		m_notifyProg = strdup(tokens[0].c_str());
+		
+		m_notifyProgArgs = new char* [tokens.size()];
+
+		memset(m_notifyProgArgs, 0, tokens.size() - 1);
+
+		m_notifyProgArgs[0] = strdup(m_notifyProg);
+		
+		for (int i = 2; i < tokens.size() - 1; i++)
+			m_notifyProgArgs[i - 1] = strdup(tokens[i].c_str());
+	}
 	
 	tokens.clear();
 	m_config.getOptionAndSplit("modes", ",", tokens);
@@ -116,12 +120,6 @@ void App::stop(bool destroy)
 		delete m_dev;
 		m_dev = NULL;
 	}
-
-	if (m_fd)
-	{
-		close(m_fd);
-		m_fd = -1;
-	}
 }
 
 
@@ -131,13 +129,16 @@ App::~App()
 
 	delete [] m_modes;
 	delete [] m_keys;
+
+	if (m_notifyProg)
+	{
+		free(m_notifyProg);
 	
-	free(m_notifyProg);
-	
-	for (int i = 0; m_notifyProgArgs[i] != NULL; i++)
-		free(m_notifyProgArgs[i]);
-	
-	delete [] m_notifyProgArgs;
+		for (int i = 0; m_notifyProgArgs[i] != NULL; i++)
+			free(m_notifyProgArgs[i]);
+		
+		delete [] m_notifyProgArgs;
+	}
 	
 	// TODO: free map ecc..
 }
@@ -197,12 +198,15 @@ int App::run()
 	
 	gettimeofday(&m_time, NULL);
 	
-	while (!m_exiting)
+	while (!m_exiting && m_fd != -1)
 	{
 		FD_ZERO(&fds);
 		FD_SET(m_fd, &fds);
+
+		struct timeval t;
+		t.tv_usec = 300;
 		
-		ready = ::select(m_fd + 1, &fds, NULL, NULL, NULL);
+		ready = ::select(m_fd + 1, &fds, NULL, NULL, &t);
 		
 		if (ready == -1 && !m_exiting)
 		{
@@ -230,6 +234,12 @@ int App::run()
 			//m_time = keycode->time;
 			gettimeofday(&m_time, NULL);
 		}
+	}
+
+	if (m_fd != -1)
+	{
+		close(m_fd);
+		m_fd = -1;
 	}
 
 	return 0;
