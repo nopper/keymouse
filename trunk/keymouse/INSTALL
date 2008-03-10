@@ -1,8 +1,0 @@
-Run:
-
-$ ./autogen.sh
-$ ./configure --prefix=/usr
-$ make
-
-(as root)
-# make install

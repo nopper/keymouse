@@ -22,7 +22,6 @@ void sig_handler(int signum)
 		case SIGINT:
 				Logger::Log(INFO, "Exiting ..");
 				m_app->stop(true);
-				delete m_app;
 			break;
 		case SIGHUP:
 				m_app->stop(false);
@@ -63,6 +62,8 @@ int main(int argc, char *argv[])
 
 	m_app = new App(argv[1]);
 	m_app->run();
+
+	delete m_app;
 	
 	return 0;
 }
