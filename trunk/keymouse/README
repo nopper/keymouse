@@ -1,0 +1,21 @@
+
+	 Released under the BSD License.
+
+      Copyright (C) 2008 Francesco Piccinno
+
+web:                   http://keymouse.berlios.de
+email:                   stack.box _AT_ gmail.com
+
+Q) What is Keymouse?
+
+A) Keymouse is a simple mouse emulator wich uses
+keyboard mod keys to moving the cursor or *click*
+stuff. It can be very useful with broken mousepad
+or in absence of external mouse devices.
+
+Q) Why Keymouse?
+
+A) keymouse is developed for an old ibook with
+  broken mousepad.
+
+		      # EOF
