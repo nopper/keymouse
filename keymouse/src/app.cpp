@@ -44,7 +44,7 @@ void App::allocateObject()
 	m_notifyProg = strdup(tokens[0].c_str());
 	
 	m_notifyProgArgs = new char* [tokens.size()];
-	m_notifyProgArgs = strdup(m_notifyProg);
+	m_notifyProgArgs[0] = strdup(m_notifyProg);
 	
 	for (int i = 2; i < tokens.size() - 1; i++)
 		m_notifyProgArgs[i - 1] = strdup(tokens[i].c_str());
