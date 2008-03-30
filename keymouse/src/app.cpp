@@ -203,10 +203,7 @@ int App::run()
 		FD_ZERO(&fds);
 		FD_SET(m_fd, &fds);
 
-		struct timeval t;
-		t.tv_usec = 300;
-		
-		ready = ::select(m_fd + 1, &fds, NULL, NULL, &t);
+		ready = ::select(m_fd + 1, &fds, NULL, NULL, NULL);
 		
 		if (ready == -1 && !m_exiting)
 		{
