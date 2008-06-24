@@ -1,0 +1,52 @@
+# Keymouse (C) 2008 Francesco Piccinno <stack.box@gmail.com> - BSD License
+# Example configuration
+
+# Global options
+device=/dev/input/event0
+udevice=/dev/input/uinput
+debug=1
+dump=0
+max accel=200
+max modes=6
+touchscreen=1
+touchscreen_autorepeat=1
+touchscreen_autorepeat_rate=600
+touchscreen_max_x=800
+touchscreen_max_y=480
+
+# 0 no notify 1 blocknum notify 2 exec notify
+notify=0
+notify exec=
+
+# Mapping (see /usr/include/linux/input.h for keycode or use dump option)
+# m=apple key key M=fn + ctrl (iBook G3 keyboard)
+# modes=<c|s|a|m|M|f>
+# bkeys=<fc|fs|fa|fm>
+
+# N810   FN  ^  Chr ctrl  <   ,  .
+#	 464 42 127  97   1  51 52
+
+# Macbook Pro
+# shft  ctr alt apl  rapl ^
+# 42,   29, 56, 125, 126, 100
+
+modes=464,42,127,97,1,51,52
+#bkeys=126,100
+
+# Actions
+# <action>=mod1:mod2
+
+up=42:0:	# FN    + Shift
+down=127:0:	# FN    + Chr
+right=127:1:	# Shift + FN
+left=464:1:	# Shift + Chr
+rup=42:4:	# back  + Shift
+rdown=127:4:	# back  + Chr
+lup=97:4:	# back  + Ctrl
+ldown=1:0:	# FN    + back
+click=51:1:	# Shift + ,
+rclick=97:1:	# Shift + Ctrl
+3click=52:1:	# Shift + .
+lock=464:4:	# back  + FN
+
+# EOF
