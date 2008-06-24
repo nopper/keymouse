@@ -34,7 +34,7 @@ class Device
 {
 public:
 	/*! \brief Default constructor */
-	Device();
+	Device(bool touchscreen, int touchscreen_max_x, int touchscreen_max_y);
 
 	/*! \brief Default destructor */
 	~Device();
@@ -48,8 +48,9 @@ public:
 	/*! \brief Moves the pointer (relative)
 	 * \param rel_x x coord
 	 * \param rel_y y coord
+	 * \param key pressed
 	 */
-	void moveTo(int rel_x, int rel_y);
+	void moveTo(int rel_x, int rel_y, int pressed);
 
 	/*! \brief Return true if the device is valid */
 	bool isValid() { return m_valid; };
@@ -59,6 +60,12 @@ public:
 	 * \param pressed pressed or released
 	 */
 	bool sendClick(int btn, int pressed);
+
+	int m_abs_x;
+	int m_abs_y;
+	int m_max_x;
+	int m_max_y;
+	bool m_absolute;//! absolute coordinate mode (touchscreen)
 private:
 	int m_fd;	//! file descriptor
 	bool m_valid;	//! valid flag

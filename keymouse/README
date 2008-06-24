@@ -18,4 +18,10 @@ Q) Why Keymouse?
 A) keymouse is developed for an old ibook with
   broken mousepad.
 
+Q) Why Keymouse touchscreen support?
+
+A) Having multiple input devices might be nice for 
+   multitouch development in single touch devices 
+   such as N810.
+
 		      # EOF

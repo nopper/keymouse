@@ -37,7 +37,12 @@ void App::allocateObject()
 	m_maxModes = static_cast <unsigned int> (m_config.getOptionAsInt("max modes", 6));
 	m_maxAccel = m_config.getOptionAsInt("max accel", 10);
 	m_notify = m_config.getOptionAsInt("notify", 0);
-	
+	m_touchscreen = m_config.getOptionAsInt("touchscreen", 0);	
+	m_touchscreen_autorepeat = m_config.getOptionAsInt("touchscreen_autorepeat", 0);	
+	m_touchscreen_autorepeat_rate = m_config.getOptionAsInt("touchscreen_autorepeat_rate", 0);	
+	m_touchscreen_max_x = m_config.getOptionAsInt("touchscreen_max_x", 10);	
+	m_touchscreen_max_y = m_config.getOptionAsInt("touchscreen_max_y", 10);	
+
 	std::vector<string> tokens;
 	m_config.getOptionAndSplit("notify exec", " ", tokens);
 
@@ -175,6 +180,8 @@ int App::run()
 	int ready, i;
 	fd_set fds;
 	struct input_event  *keycode;
+	unsigned short last_keycode;
+	unsigned int last_keyvalue;
 	
 	if ((m_fd = ::open(m_config.getOption("device").c_str(), O_RDWR | O_NDELAY)) < 0)
 	{
@@ -186,7 +193,7 @@ int App::run()
 	if (!m_dump)
 	{
 		if (!m_dev)
-			m_dev = new Device();
+			m_dev = new Device(m_touchscreen, m_touchscreen_max_x, m_touchscreen_max_y);
 
 		if (!m_dev->isValid() && !m_dev->allocate(m_config.getOption("udevice").c_str()))
 		{
@@ -202,16 +209,43 @@ int App::run()
 	{
 		FD_ZERO(&fds);
 		FD_SET(m_fd, &fds);
-		
-		ready = ::select(m_fd + 1, &fds, NULL, NULL, NULL);
+
+		struct timeval t;
+		t.tv_sec = 0;
+		if(m_touchscreen_autorepeat_rate) 
+		{
+			t.tv_usec = m_touchscreen_autorepeat_rate;
+		} 
+		else 
+		{
+			t.tv_usec = 300;
+		}
+
+		ready = ::select(m_fd + 1, &fds, NULL, NULL, &t);
 		
 		if (ready == -1 && !m_exiting)
 		{
 			Logger::Log(ERROR, "Error in select()");
 			return -1;
 		}
-		else if (ready == 0)
+		else if (ready == 0) 
+		{
+			static int keydown = 0;
+		        if( m_touchscreen && m_touchscreen_autorepeat && ! m_dump ) 
+			{
+				if(last_keyvalue) // if holding key down, repeat movement
+				{
+					parseKey(true, last_keycode);
+					keydown = true;
+				}
+				else if(keydown) // else key up event, change pressure to 0, keeping current coords
+				{
+					m_dev->moveTo(m_dev->m_abs_x, m_dev->m_abs_y, last_keyvalue);
+					keydown = false;
+				}
+			}
 			continue;
+		}
 		else
 		{
 			/* Skip null or syn packet */
@@ -222,7 +256,10 @@ int App::run()
 			
 			if (keycode->value == 0)
 				pressed = false;
-			
+
+			last_keycode = keycode->code;
+			last_keyvalue = keycode->value;
+
 			m_time.tv_usec = keycode->time.tv_usec - m_time.tv_usec;
 			m_time.tv_sec = keycode->time.tv_sec - m_time.tv_sec;
 			

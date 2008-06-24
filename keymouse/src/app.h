@@ -116,8 +116,16 @@ private:
 	
 	bool
 		m_dump,		//! dump flag
+		m_touchscreen,	//! touchscreen flag, ie give absolute coords instead of relative
 		m_exiting;	//! exiting flag
 	
+	int m_touchscreen_max_x;	//! Touchscreen x coord max
+	int m_touchscreen_max_y;	//! Touchscreen y coord max
+	int m_touchscreen_autorepeat;	//! autorepeat abs coords, ie finger down.
+	int m_touchscreen_autorepeat_rate;	//! ::select() timeout
+	int m_abs_x;		//! Touchscreen x coord
+	int m_abs_y;		//! Touchscreen y coord
+
 	int m_maxAccel;		//! accel limit
 
 	mod_key *m_modes;	//! modes

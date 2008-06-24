@@ -80,14 +80,21 @@ int Shortcut::execAction(Device& dev, int pressed, unsigned short code, float mu
 	if (m_action == "left" || m_action == "lup" || m_action == "ldown")
 		x = -1;
 	if (m_action == "down" || m_action == "ldown" || m_action == "rdown")
-		y = +1;
-	if (m_action == "up" || m_action == "lup" || m_action == "rup")
 		y = -1;
+	if (m_action == "up" || m_action == "lup" || m_action == "rup")
+		y = +1;
 	
 	x *= mul;
 	y *= mul;
 	
-	dev.moveTo(x, y);
+	if(dev.m_absolute) // Calculate new absolute coordinates based on movement, keeping within max boundaries.
+	{
+		if((dev.m_abs_x + x >= 0) && (dev.m_abs_x + x <= dev.m_max_x)) {dev.m_abs_x = dev.m_abs_x + x;} x=dev.m_abs_x;
+
+		if((dev.m_abs_y + y >= 0) && (dev.m_abs_y + y <= dev.m_max_y)) {dev.m_abs_y = dev.m_abs_y + y;} y=dev.m_abs_y;
+	}
+
+	dev.moveTo(x, y, pressed);
 
 	return 0;
 }
