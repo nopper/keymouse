@@ -4,8 +4,9 @@
       BSD License
 */
 
-#include "shortcut.h"
+#include <stdlib.h>
 #include <linux/input.h>
+#include "shortcut.h"
 
 bool Shortcut::locked = false;
 

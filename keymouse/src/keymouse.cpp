@@ -9,6 +9,7 @@
 #endif
 
 #include <signal.h>
+#include <stdlib.h>
 #include "app.h"
 
 using namespace std;

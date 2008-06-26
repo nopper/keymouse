@@ -6,6 +6,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <stdlib.h>
 #include "configfile.h"
 
 ConfigFile::ConfigFile(const char *file) : m_values(), m_file(file)

@@ -4,8 +4,9 @@
       BSD License
 */
 
-#include "logger.h"
 #include <iostream>
+#include <stdarg.h>
+#include "logger.h"
 
 using namespace std;
 
