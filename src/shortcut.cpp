@@ -81,9 +81,9 @@ int Shortcut::execAction(Device& dev, int pressed, unsigned short code, float mu
 	if (m_action == "left" || m_action == "lup" || m_action == "ldown")
 		x = -1;
 	if (m_action == "down" || m_action == "ldown" || m_action == "rdown")
-		y = -1;
-	if (m_action == "up" || m_action == "lup" || m_action == "rup")
 		y = +1;
+	if (m_action == "up" || m_action == "lup" || m_action == "rup")
+		y = -1;
 	
 	x *= mul;
 	y *= mul;
